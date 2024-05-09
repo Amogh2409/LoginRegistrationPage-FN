@@ -26,8 +26,8 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.white,
           visualDensity: VisualDensity.adaptivePlatformDensity),
       home: (tokens != null && JwtDecoder.isExpired(tokens) == false)
-          ? Dashboard()
-          : Dashboard(),
+          ? const Dashboard()
+          : const SignInPage(),
     );
   }
 }

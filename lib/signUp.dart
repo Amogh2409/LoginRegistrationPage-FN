@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:login_page/DashBoard.dart';
 import 'package:login_page/signInPage.dart';
+
+import 'provider/auth_provider.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -9,10 +12,28 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  void signIn() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const SignInPage()));
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isNotValidate = false;
+  void SignInUser() async {
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      var token = await AuthProvider.loginUser(
+          _emailController.text, _passwordController.text);
+      if (token != null) {
+        print('Login successful');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const Dashboard()));
+      } else {
+        print('Login failed');
+      }
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,6 +66,7 @@ class _SignUpState extends State<SignUp> {
                 Container(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: TextFormField(
+                    controller: _emailController,
                     decoration: const InputDecoration(
                         hintText: "Email",
                         border: OutlineInputBorder(
@@ -58,8 +80,10 @@ class _SignUpState extends State<SignUp> {
                 Container(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: TextFormField(
+                    controller: _passwordController,
                     decoration: const InputDecoration(
                         hintText: "Password",
+                        
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -68,13 +92,12 @@ class _SignUpState extends State<SignUp> {
                 const SizedBox(
                   height: 20,
                 ),
-                
-
                 Container(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: ElevatedButton(
                     onPressed: () {},
-                    child: const Text("Sign Up", style: TextStyle(fontSize: 20)),
+                    child:
+                        const Text("Sign Up", style: TextStyle(fontSize: 20)),
                   ),
                 ),
                 const SizedBox(
@@ -85,7 +108,6 @@ class _SignUpState extends State<SignUp> {
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: TextButton(
                     onPressed: () {
-                      signIn();
                       
                     },
                     child: const Text("Sign In"),
